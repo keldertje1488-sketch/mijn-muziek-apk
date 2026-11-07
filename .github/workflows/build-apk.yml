@@ -1,9 +1,6 @@
 name: Build and publish APK
 
 on:
-  push:
-    paths:
-      - 'source.part-*'
   workflow_dispatch:
 
 permissions:
@@ -19,12 +16,14 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+      - name: Install Android SDK 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
       - name: Restore complete project
         run: |
-          cat source.part-* > source.zip
+          curl -fL 'https://github.com/keldertje1488-sketch/mijn-muziek-apk/releases/download/v4.52/source.zip' -o source.zip
           unzip -q source.zip -d work
       - name: Build installable APK
         working-directory: work/Mijn_Muziek_Telefoon_PC_V4_52/android-project
